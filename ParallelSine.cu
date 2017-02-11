@@ -45,6 +45,23 @@ void sine_serial(float *input, float *output)
 
 // kernel function (CUDA device)
 // TODO: Implement your graphics kernel here. See assignment instructions for method information
+__global__ void sine(float * d_gpu_result, float * d_in)
+{
+	int idx = threadIdx.x;
+	float value = d_in[idx]; 
+      float numer = d_in[idx] * d_in[idx] * d_in[idx]; 
+      int denom = 6; // 3! 
+      int sign = -1; 
+      for (int j=1; j<=TERMS;j++) 
+      { 
+         value += sign * numer / denom; 
+         numer *= d_in[idx] * d_in[idx]; 
+         denom *= (2*j+2) * (2*j+3); 
+         sign *= -1; 
+      } 
+      d_gpu_result[idx] = value;
+
+}
 
 // BEGIN: timing and error checking routines (do not modify)
 
@@ -113,7 +130,18 @@ int main (int argc, char **argv)
 
 
   //TODO: Prepare and run your kernel, make sure to copy your results back into h_gpu_result and display your timing results
+  float * d_in;
   float *h_gpu_result = (float*)malloc(N*sizeof(float));
+  float * d_gpu_result;
+
+  cudaMalloc((void **) &d_in, N*sizeof(float));
+  cudaMalloc((void **) &d_gpu_result, N*sizeof(float));
+
+  cudaMemcpy(d_in, h_input, N*sizeof(float), cudaMemcpyHostToDevise);
+
+  sine<<<1, N*sizeof(float)>>>(d_gpu_result, d_in)
+
+  cudaMemcpy(h_gpu_result, d_gpu_result, N*sizeof(float), cudaMemcpyDeviseToHost)
 
   // Checking to make sure the CPU and GPU results match - Do not modify
   int errorCount = 0;
