@@ -1,0 +1,11 @@
+I cannot complie this on a windows computer. It doesn't allow me to include sys/time.h
+
+Also for some reason Some of the commands show an error.(They should not like __global__ I tried openeing a new project and copying it's 
+global call and still and error also I tried copying the call from one new project to the other and an error message appears, 
+same with all the cuda commands and a lot of cpu commands as well....)
+
+Honestly I spent a large ammount of time trying to set up my development enviroment. (I have a cuda cappable card but the card 
+I normally use is AMD, when I installed my cuda card it wouldn't boot, after about a day of working on it I was able to fix this) 
+and I just got back from a 10 hr shift at work and I am very sad I cannot compile this, and I wish I just turned this in yestarday...
+
+I no longer have the time to make it to campus to try on their machines, and honestly I just want to go to bed...
