@@ -44,11 +44,13 @@ void sine_serial(float *input, float *output)
 
 
 // kernel function (CUDA device)
-// TODO: Implement your graphics kernel here. See assignment instructions for method information
 __global__ void sine(float * d_gpu_result, float * d_in)
 {
+//obtain thread index
 	int idx = threadIdx.x;
+	//obtain value in memory that relates to that thread index
 	float value = d_in[idx]; 
+		//sine serial code
       float numer = d_in[idx] * d_in[idx] * d_in[idx]; 
       int denom = 6; // 3! 
       int sign = -1; 
@@ -129,21 +131,27 @@ int main (int argc, char **argv)
   //END: CPU implementation (do not modify)
 
 
-  //TODO: Prepare and run your kernel, make sure to copy your results back into h_gpu_result and display your timing results
+  //Preparing and runing my kernel
   float * d_in;
   float *h_gpu_result = (float*)malloc(N*sizeof(float));
   float * d_gpu_result;
 
+//setting aside memory
   cudaMalloc((void **) &d_in, N*sizeof(float));
   cudaMalloc((void **) &d_gpu_result, N*sizeof(float));
 
+//starting timmer
   long long GPU_start_time = start_timer();
+//copying input memory from cpu to gpu
   cudaMemcpy(d_in, h_input, N * sizeof(float), cudaMemcpyHostToDevise);
 
+//running the threads
   sine<<<1, N*sizeof(float)>>>(d_gpu_result, d_in);
 
+//coping the output memory from the gpu to the cpu
   cudaMemcpy(h_gpu_result, d_gpu_result, N*sizeof(float), cudaMemcpyDeviseToHost);
 
+//stopping the timmer
   long long GPU_time = stop_timer(GPU_start_time, "\nGPU Run Time");
 
   // Checking to make sure the CPU and GPU results match - Do not modify
