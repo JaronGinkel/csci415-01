@@ -137,11 +137,14 @@ int main (int argc, char **argv)
   cudaMalloc((void **) &d_in, N*sizeof(float));
   cudaMalloc((void **) &d_gpu_result, N*sizeof(float));
 
-  cudaMemcpy(d_in, h_input, N*sizeof(float), cudaMemcpyHostToDevise);
+  long long GPU_start_time = start_timer();
+  cudaMemcpy(d_in, h_input, N * sizeof(float), cudaMemcpyHostToDevise);
 
-  sine<<<1, N*sizeof(float)>>>(d_gpu_result, d_in)
+  sine<<<1, N*sizeof(float)>>>(d_gpu_result, d_in);
 
-  cudaMemcpy(h_gpu_result, d_gpu_result, N*sizeof(float), cudaMemcpyDeviseToHost)
+  cudaMemcpy(h_gpu_result, d_gpu_result, N*sizeof(float), cudaMemcpyDeviseToHost);
+
+  long long GPU_time = stop_timer(GPU_start_time, "\nGPU Run Time");
 
   // Checking to make sure the CPU and GPU results match - Do not modify
   int errorCount = 0;
